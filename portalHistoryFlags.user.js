@@ -126,7 +126,7 @@ function wrapper(plugin_info) {
     }
     thisPlugin.unvisitedHighlight = function(data){
         let style = {};
-        if(!(data.portal.options.ent.length == 3 && data.portal.options.ent[2].length >= 18 && data.portal.options.ent[2][18] & 0b1 === 1)){
+        if((data.portal.options.ent.length == 3 && data.portal.options.ent[2].length >= 18 && (data.portal.options.ent[2][18] & 0b1) === 1)){
             style.fillOpacity = 0;
             style.stroke = false;
         } else {
@@ -137,7 +137,7 @@ function wrapper(plugin_info) {
     }
     thisPlugin.uncapturedHighlight = function(data){
         let style = {};
-        if(!(data.portal.options.ent.length == 3 && data.portal.options.ent[2].length >= 18 && data.portal.options.ent[2][18] & 0b10 === 2)){
+        if((data.portal.options.ent.length == 3 && data.portal.options.ent[2].length >= 18 && (data.portal.options.ent[2][18] & 0b10) === 2)){
             style.fillOpacity = 0;
             style.stroke = false;
         } else {
@@ -148,7 +148,7 @@ function wrapper(plugin_info) {
     }
     thisPlugin.unscoutedHighlight = function(data){
         let style = {};
-        if(!(data.portal.options.ent.length == 3 && data.portal.options.ent[2].length >= 18 && data.portal.options.ent[2][18] & 0b100 === 4)){
+        if((data.portal.options.ent.length == 3 && data.portal.options.ent[2].length >= 18 && (data.portal.options.ent[2][18] & 0b100) === 4)){
             style.fillOpacity = 0;
             style.stroke = false;
         } else {
