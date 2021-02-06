@@ -6,7 +6,7 @@
 // @namespace	https://github.com/jimsug/IngressPortalHistoryFlags
 // @downloadURL	https://github.com/jimsug/IngressPortalHistoryFlags/raw/main/portalHistoryFlags.user.js
 // @homepageURL	https://github.com/jimsug/IngressPortalHistoryFlags
-// @description Shows Visited/Captured/Scouted status above portal markers
+// @description Shows Visited/Captured/Scouted status
 // @author jimsug
 // original author: EisFrei
 // @include		https://intel.ingress.com/*
@@ -96,7 +96,7 @@ function wrapper(plugin_info) {
             ).addTo(thisPlugin.invLayerGroup);
             L.circle(portal._latlng,
                 portal.options.radius + 10, thisPlugin.ornamentUnScouted
-            ).addTo(thisPlugin.unvisited);
+            ).addTo(thisPlugin.unscouted);
         }
 
     }
