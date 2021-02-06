@@ -28,7 +28,7 @@ function wrapper(plugin_info) {
 	plugin_info.buildName = "PortalHistoryFlags";
 
 	// Datetime-derived version of the plugin
-	plugin_info.dateTimeVersion = "202102052302";
+	plugin_info.dateTimeVersion = "202102060034";
 
 	// ID/name of the plugin
 	plugin_info.pluginId = "portalhistoryflags";
