@@ -2,7 +2,7 @@
 // @id portalHistoryFlags
 // @name IITC Plugin: Portal History Flags
 // @category Layer
-// @version 0.0.2
+// @version 0.0.3
 // @namespace	https://github.com/jimsug/IngressPortalHistoryFlags
 // @downloadURL	https://github.com/jimsug/IngressPortalHistoryFlags/raw/main/portalHistoryFlags.user.js
 // @homepageURL	https://github.com/jimsug/IngressPortalHistoryFlags
@@ -28,7 +28,7 @@ function wrapper(plugin_info) {
 	plugin_info.buildName = "PortalHistoryFlags";
 
 	// Datetime-derived version of the plugin
-	plugin_info.dateTimeVersion = "202102060034";
+	plugin_info.dateTimeVersion = "202102060112";
 
 	// ID/name of the plugin
 	plugin_info.pluginId = "portalhistoryflags";
@@ -71,6 +71,11 @@ function wrapper(plugin_info) {
                 interactive: false,
                 keyboard: false,
             }).addTo(thisPlugin.invLayerGroup);
+            L.marker(portal._latlng, {
+                icon: thisPlugin.iconVisited,
+                interactive: false,
+                keyboard: false,
+            }).addTo(thisPlugin.unvisited);
         }
 
         if (portal.options.data.agentCaptured) {
@@ -85,6 +90,11 @@ function wrapper(plugin_info) {
                 interactive: false,
                 keyboard: false,
             }).addTo(thisPlugin.invLayerGroup);
+            L.marker(portal._latlng, {
+                icon: thisPlugin.iconCaptured,
+                interactive: false,
+                keyboard: false,
+            }).addTo(thisPlugin.uncaptured);
         }
 
         if (portal.options.data.agentScouted) {
@@ -99,6 +109,11 @@ function wrapper(plugin_info) {
                 interactive: false,
                 keyboard: false,
             }).addTo(thisPlugin.invLayerGroup);
+            L.marker(portal._latlng, {
+                icon: thisPlugin.iconScouted,
+                interactive: false,
+                keyboard: false,
+            }).addTo(thisPlugin.unscouted);
         }
 
     }
@@ -116,8 +131,14 @@ function wrapper(plugin_info) {
         thisPlugin.iconScouted = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="#ff9c00" cx="50" cy="50" r="50"/></svg>', -5);
         thisPlugin.layerGroup = new L.LayerGroup();
         thisPlugin.invLayerGroup = new L.LayerGroup();
+        thisPlugin.uncaptured = new L.LayerGroup();
+        thisPlugin.unvisited = new L.LayerGroup();
+        thisPlugin.unscouted = new L.LayerGroup();
         window.addLayerGroup('Portal History', thisPlugin.layerGroup, false);
         window.addLayerGroup('Portal History (Inverted)', thisPlugin.invLayerGroup, false);
+        window.addLayerGroup('Portal History (Unvisited)', thisPlugin.unvisited, false);
+        window.addLayerGroup('Portal History (Uncaptured)', thisPlugin.uncaptured, false);
+        window.addLayerGroup('Portal History (Unscouted)', thisPlugin.unscouted, false);
 
         window.addHook('portalAdded', thisPlugin.addToPortalMap);
     }
