@@ -2,7 +2,7 @@
 // @id portalHistoryFlags
 // @name IITC Plugin: Portal History Flags
 // @category Layer
-// @version 0.0.3
+// @version 0.0.4
 // @namespace	https://github.com/jimsug/IngressPortalHistoryFlags
 // @downloadURL	https://github.com/jimsug/IngressPortalHistoryFlags/raw/main/portalHistoryFlags.user.js
 // @homepageURL	https://github.com/jimsug/IngressPortalHistoryFlags
@@ -124,7 +124,39 @@ function wrapper(plugin_info) {
             drawPortalFlags(portal);
         }
     }
-
+    thisPlugin.unvisitedHighlight = function(data){
+        let style = {};
+        if(!(data.portal.options.ent.length == 3 && data.portal.options.ent[2].length >= 18 && data.portal.options.ent[2][18] & 0b1 === 1)){
+            style.fillOpacity = 0;
+            style.stroke = false;
+        } else {
+            style.fillOpacity = 0.5;
+            style.stroke = true;
+        }
+        data.portal.setStyle(style);
+    }
+    thisPlugin.uncapturedHighlight = function(data){
+        let style = {};
+        if(!(data.portal.options.ent.length == 3 && data.portal.options.ent[2].length >= 18 && data.portal.options.ent[2][18] & 0b10 === 2)){
+            style.fillOpacity = 0;
+            style.stroke = false;
+        } else {
+            style.fillOpacity = 0.5;
+            style.stroke = true;
+        }
+        data.portal.setStyle(style);
+    }
+    thisPlugin.unscoutedHighlight = function(data){
+        let style = {};
+        if(!(data.portal.options.ent.length == 3 && data.portal.options.ent[2].length >= 18 && data.portal.options.ent[2][18] & 0b100 === 4)){
+            style.fillOpacity = 0;
+            style.stroke = false;
+        } else {
+            style.fillOpacity = 0.5;
+            style.stroke = true;
+        }
+        data.portal.setStyle(style);
+    }
 	function setup() {
         thisPlugin.iconVisited = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="#9538ff" cx="50" cy="50" r="50"/></svg>', 15);
         thisPlugin.iconCaptured = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="#ff0000" cx="50" cy="50" r="50"/></svg>', 5);
@@ -141,6 +173,10 @@ function wrapper(plugin_info) {
         window.addLayerGroup('Portal History (Unscouted)', thisPlugin.unscouted, false);
 
         window.addHook('portalAdded', thisPlugin.addToPortalMap);
+
+        window.addPortalHighlighter("Unvisited", thisPlugin.unvisitedHighlight);
+        window.addPortalHighlighter("Uncaptured", thisPlugin.uncapturedHighlight);
+        window.addPortalHighlighter("Unscouted", thisPlugin.unscoutedHighlight);
     }
     	setup.info = plugin_info; //add the script info data to the function as a property
 	// if IITC has already booted, immediately run the 'setup' function
