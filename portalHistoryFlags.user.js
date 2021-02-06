@@ -44,7 +44,12 @@ function wrapper(plugin_info) {
     }
 
     thisPlugin.addToPortalMap = function (data) {
-        if (data.portal.options.ent.length !== 3 || data.portal.options.ent[2].length < 19 || !(data.portal.options.ent[2][18] > 0)) {
+        if( data.portal.options.ent.length == 3 && data.portal.options.ent[2].length >= 14 ){
+            data.portal.options.data.agentVisited = false;
+            data.portal.options.data.agentCaptured = false;
+            data.portal.options.data.agentScouted = false;
+        }
+        if (data.portal.options.ent.length !== 3 || data.portal.options.ent[2].length < 14 || ( data.portal.options.ent[2].length >= 18 && !(data.portal.options.ent[2][18] > 0))) {
             return;
         }
         data.portal.options.data.agentVisited = (data.portal.options.ent[2][18] & 0b1) === 1;
@@ -60,20 +65,40 @@ function wrapper(plugin_info) {
                 interactive: false,
                 keyboard: false,
             }).addTo(thisPlugin.layerGroup);
+        } else {
+            L.marker(portal._latlng, {
+                icon: thisPlugin.iconVisited,
+                interactive: false,
+                keyboard: false,
+            }).addTo(thisPlugin.invLayerGroup);
         }
+
         if (portal.options.data.agentCaptured) {
             L.marker(portal._latlng, {
                 icon: thisPlugin.iconCaptured,
                 interactive: false,
                 keyboard: false,
             }).addTo(thisPlugin.layerGroup);
+        } else {
+            L.marker(portal._latlng, {
+                icon: thisPlugin.iconCaptured,
+                interactive: false,
+                keyboard: false,
+            }).addTo(thisPlugin.invLayerGroup);
         }
+
         if (portal.options.data.agentScouted) {
             L.marker(portal._latlng, {
                 icon: thisPlugin.iconScouted,
                 interactive: false,
                 keyboard: false,
             }).addTo(thisPlugin.layerGroup);
+        } else {
+            L.marker(portal._latlng, {
+                icon: thisPlugin.iconScouted,
+                interactive: false,
+                keyboard: false,
+            }).addTo(thisPlugin.invLayerGroup);
         }
 
     }
@@ -89,9 +114,10 @@ function wrapper(plugin_info) {
         thisPlugin.iconVisited = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="#9538ff" cx="50" cy="50" r="50"/></svg>', 15);
         thisPlugin.iconCaptured = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="#ff0000" cx="50" cy="50" r="50"/></svg>', 5);
         thisPlugin.iconScouted = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="#ff9c00" cx="50" cy="50" r="50"/></svg>', -5);
-
         thisPlugin.layerGroup = new L.LayerGroup();
+        thisPlugin.invLayerGroup = new L.LayerGroup();
         window.addLayerGroup('Portal History', thisPlugin.layerGroup, false);
+        window.addLayerGroup('Portal History (Inverted)', thisPlugin.invLayerGroup, false);
 
         window.addHook('portalAdded', thisPlugin.addToPortalMap);
     }
