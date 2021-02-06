@@ -2,12 +2,13 @@
 // @id portalHistoryFlags
 // @name IITC Plugin: Portal History Flags
 // @category Layer
-// @version 0.0.4
+// @version 0.0.5
 // @namespace	https://github.com/jimsug/IngressPortalHistoryFlags
 // @downloadURL	https://github.com/jimsug/IngressPortalHistoryFlags/raw/main/portalHistoryFlags.user.js
 // @homepageURL	https://github.com/jimsug/IngressPortalHistoryFlags
 // @description Shows Visited/Captured/Scouted status above portal markers
-// @author EisFrei
+// @author jimsug
+// original author: EisFrei
 // @include		https://intel.ingress.com/*
 // @match		https://intel.ingress.com/*
 // @grant			none
@@ -28,7 +29,7 @@ function wrapper(plugin_info) {
 	plugin_info.buildName = "PortalHistoryFlags";
 
 	// Datetime-derived version of the plugin
-	plugin_info.dateTimeVersion = "202102060112";
+	plugin_info.dateTimeVersion = "202102061410";
 
 	// ID/name of the plugin
 	plugin_info.pluginId = "portalhistoryflags";
@@ -60,60 +61,42 @@ function wrapper(plugin_info) {
 
     function drawPortalFlags(portal) {
         if (portal.options.data.agentVisited) {
-            L.marker(portal._latlng, {
-                icon: thisPlugin.iconVisited,
-                interactive: false,
-                keyboard: false,
-            }).addTo(thisPlugin.layerGroup);
+            L.circle(portal._latlng,
+                portal.options.radius + 10, thisPlugin.ornamentVisited
+            ).addTo(thisPlugin.layerGroup);
         } else {
-            L.marker(portal._latlng, {
-                icon: thisPlugin.iconVisited,
-                interactive: false,
-                keyboard: false,
-            }).addTo(thisPlugin.invLayerGroup);
-            L.marker(portal._latlng, {
-                icon: thisPlugin.iconVisited,
-                interactive: false,
-                keyboard: false,
-            }).addTo(thisPlugin.unvisited);
+            L.circle(portal._latlng,
+                portal.options.radius + 10, thisPlugin.ornamentUnVisited
+            ).addTo(thisPlugin.invLayerGroup);
+            L.circle(portal._latlng,
+                portal.options.radius + 10, thisPlugin.ornamentUnVisited
+            ).addTo(thisPlugin.unvisited);
         }
 
         if (portal.options.data.agentCaptured) {
-            L.marker(portal._latlng, {
-                icon: thisPlugin.iconCaptured,
-                interactive: false,
-                keyboard: false,
-            }).addTo(thisPlugin.layerGroup);
+            L.circle(portal._latlng,
+                portal.options.radius + 15, thisPlugin.ornamentCaptured
+            ).addTo(thisPlugin.layerGroup);
         } else {
-            L.marker(portal._latlng, {
-                icon: thisPlugin.iconCaptured,
-                interactive: false,
-                keyboard: false,
-            }).addTo(thisPlugin.invLayerGroup);
-            L.marker(portal._latlng, {
-                icon: thisPlugin.iconCaptured,
-                interactive: false,
-                keyboard: false,
-            }).addTo(thisPlugin.uncaptured);
+            L.circle(portal._latlng,
+                portal.options.radius + 15, thisPlugin.ornamentUnCaptured
+            ).addTo(thisPlugin.invLayerGroup);
+            L.circle(portal._latlng,
+                portal.options.radius + 10, thisPlugin.ornamentUnCaptured
+            ).addTo(thisPlugin.uncaptured);
         }
 
         if (portal.options.data.agentScouted) {
-            L.marker(portal._latlng, {
-                icon: thisPlugin.iconScouted,
-                interactive: false,
-                keyboard: false,
-            }).addTo(thisPlugin.layerGroup);
+            L.circle(portal._latlng,
+                portal.options.radius + 20, thisPlugin.ornamentScouted
+            ).addTo(thisPlugin.layerGroup);
         } else {
-            L.marker(portal._latlng, {
-                icon: thisPlugin.iconScouted,
-                interactive: false,
-                keyboard: false,
-            }).addTo(thisPlugin.invLayerGroup);
-            L.marker(portal._latlng, {
-                icon: thisPlugin.iconScouted,
-                interactive: false,
-                keyboard: false,
-            }).addTo(thisPlugin.unscouted);
+            L.circle(portal._latlng,
+                portal.options.radius + 20, thisPlugin.ornamentUnScouted
+            ).addTo(thisPlugin.invLayerGroup);
+            L.circle(portal._latlng,
+                portal.options.radius + 10, thisPlugin.ornamentUnScouted
+            ).addTo(thisPlugin.unvisited);
         }
 
     }
@@ -158,9 +141,15 @@ function wrapper(plugin_info) {
         data.portal.setStyle(style);
     }
 	function setup() {
-        thisPlugin.iconVisited = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="#9538ff" cx="50" cy="50" r="50"/></svg>', 15);
-        thisPlugin.iconCaptured = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="#ff0000" cx="50" cy="50" r="50"/></svg>', 5);
-        thisPlugin.iconScouted = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="#ff9c00" cx="50" cy="50" r="50"/></svg>', -5);
+        thisPlugin.ornamentVisited = {color:"#9538ff", opacity:1, fillOpacity:0, weight:2, clickable:false}
+        thisPlugin.ornamentCaptured = {color:"#ff0000", opacity:1, fillOpacity:0, weight:2, clickable:false}
+        thisPlugin.ornamentScouted = {color:"#ff9c00", opacity:1, fillOpacity:0, weight:2, clickable:false}
+
+        thisPlugin.ornamentUnVisited = {color:"#9538ff", opacity:1, fillOpacity:0, weight:2, clickable:false, dashArray:[ 10,6]}
+        thisPlugin.ornamentUnCaptured = {color:"#ff0000", opacity:1, fillOpacity:0, weight:2, clickable:false, dashArray:[ 10,6]}
+        thisPlugin.ornamentUnScouted = {color:"#ff9c00", opacity:1, fillOpacity:0, weight:2, clickable:false, dashArray:[ 10,6]}
+
+
         thisPlugin.layerGroup = new L.LayerGroup();
         thisPlugin.invLayerGroup = new L.LayerGroup();
         thisPlugin.uncaptured = new L.LayerGroup();
@@ -174,9 +163,9 @@ function wrapper(plugin_info) {
 
         window.addHook('portalAdded', thisPlugin.addToPortalMap);
 
-        window.addPortalHighlighter("Unvisited", thisPlugin.unvisitedHighlight);
-        window.addPortalHighlighter("Uncaptured", thisPlugin.uncapturedHighlight);
-        window.addPortalHighlighter("Unscouted", thisPlugin.unscoutedHighlight);
+        window.addPortalHighlighter("Portal History: Unvisited Portals Only", thisPlugin.unvisitedHighlight);
+        window.addPortalHighlighter("Portal History: Uncaptured Portals Only", thisPlugin.uncapturedHighlight);
+        window.addPortalHighlighter("Portal History: Unscouted Portals Only", thisPlugin.unscoutedHighlight);
     }
     	setup.info = plugin_info; //add the script info data to the function as a property
 	// if IITC has already booted, immediately run the 'setup' function
