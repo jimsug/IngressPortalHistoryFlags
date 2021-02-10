@@ -2,7 +2,7 @@
 // @id portalHistoryFlags
 // @name IITC Plugin: Portal History
 // @category Info
-// @version 0.1.1
+// @version 0.1.2
 // @namespace	https://github.com/jimsug/IngressPortalHistoryFlags
 // @downloadURL	https://github.com/jimsug/IngressPortalHistoryFlags/raw/main/portalHistoryFlags.user.js
 // @homepageURL	https://github.com/jimsug/IngressPortalHistoryFlags
@@ -255,10 +255,10 @@ function wrapper(plugin_info) {
             let visited = data.portal.options.data.agentVisited ? "✔" : "✘";
             let captured = data.portal.options.data.agentCaptured ? "✔" : "✘";
             let scouted = data.portal.options.data.agentScouted ? "✔" : "✘";
-            let visitedText = data.portal.options.data.agentVisited ? "Visited" : "Unvisited";
-            let capturedText = data.portal.options.data.agentCaptured ? "Captured" : "Uncaptured";
-            let scoutedText = data.portal.options.data.agentScouted ? "Scouted" : "Unscouted";
-            $("h3.title")[0].innerHTML = $("h3.title")[0].innerHTML + ` <small><abbr title="${visitedText}">V: ${visited}</abbr>&nbsp;<abbr title="${capturedText}">C: ${captured}</abbr>&nbsp;<abbr title="${scoutedText}">S: ${scouted}</abbr></small>`;
+            let visitedText = data.portal.options.data.agentVisited ? "Visited" : "NOT visited";
+            let capturedText = data.portal.options.data.agentCaptured ? "Captured" : "NOT captured";
+            let scoutedText = data.portal.options.data.agentScouted ? "Scouted" : "NOT scouted";
+            $("#randdetails>tbody").append(`<tr><td colspan="4" style="text-align: center;"><abbr title="${visitedText}">V: ${visited}</abbr>&nbsp;<abbr title="${capturedText}">C: ${captured}</abbr>&nbsp;<abbr title="${scoutedText}">S: ${scouted}</abbr></td></tr>`);
         });
         setup.info = plugin_info; //add the script info data to the function as a property
     // if IITC has already booted, immediately run the 'setup' function
