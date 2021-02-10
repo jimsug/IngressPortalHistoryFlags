@@ -258,7 +258,7 @@ function wrapper(plugin_info) {
             let visitedText = data.portal.options.data.agentVisited ? "Visited" : "NOT visited";
             let capturedText = data.portal.options.data.agentCaptured ? "Captured" : "NOT captured";
             let scoutedText = data.portal.options.data.agentScouted ? "Scouted" : "NOT scouted";
-            $("#randdetails>tbody").append(`<tr><td colspan="4" style="text-align: center;"><abbr title="${visitedText}">V: ${visited}</abbr>&nbsp;<abbr title="${capturedText}">C: ${captured}</abbr>&nbsp;<abbr title="${scoutedText}">S: ${scouted}</abbr></td></tr>`);
+            $("#randdetails>tbody").append(`<tr><td colspan="4" style="text-align: center;"><strong><abbr style="color: #9538ff;" title="${visitedText}">V: ${visited}</abbr>&nbsp;<abbr style="color: #ff0000;" title="${capturedText}">C: ${captured}</abbr>&nbsp;<abbr style="color: #ff9c00;" title="${scoutedText}">S: ${scouted}</abbr></strong></td></tr>`);
         });
         setup.info = plugin_info; //add the script info data to the function as a property
     // if IITC has already booted, immediately run the 'setup' function
