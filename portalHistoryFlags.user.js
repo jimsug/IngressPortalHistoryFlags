@@ -20,7 +20,7 @@ function wrapper(plugin_info) {
     // and other plugins assume the same.
     if (typeof window.plugin !== "function") window.plugin = function () {};
 
-    const KEY_SETTINGS = "plugin-portal-history-flags";
+    const KEY_SETTINGS = "plugin-portal-history-flags-jimsug";
 
     window.plugin.PortalHistoryFlags = function () {};
 
