@@ -2,7 +2,7 @@
 // @id portalHistoryFlags
 // @name IITC Plugin: Portal History
 // @category Info
-// @version 0.1.0
+// @version 0.1.1
 // @namespace	https://github.com/jimsug/IngressPortalHistoryFlags
 // @downloadURL	https://github.com/jimsug/IngressPortalHistoryFlags/raw/main/portalHistoryFlags.user.js
 // @homepageURL	https://github.com/jimsug/IngressPortalHistoryFlags
@@ -258,7 +258,7 @@ function wrapper(plugin_info) {
             let visitedText = data.portal.options.data.agentVisited ? "Visited" : "Unvisited";
             let capturedText = data.portal.options.data.agentCaptured ? "Captured" : "Uncaptured";
             let scoutedText = data.portal.options.data.agentScouted ? "Scouted" : "Unscouted";
-            $("h3.title")[0].innerHTML = $("h3.title")[0].innerHTML + ` <small><abbr title="${visitedText}">V: ${visited}</abbr>|<abbr title="${capturedText}">C: ${captured}</abbr>|<abbr title="${scoutedText}">S: ${scouted}</abbr>`;
+            $("h3.title")[0].innerHTML = $("h3.title")[0].innerHTML + ` <small><abbr title="${visitedText}">V: ${visited}</abbr>&nbsp;<abbr title="${capturedText}">C: ${captured}</abbr>&nbsp;<abbr title="${scoutedText}">S: ${scouted}</abbr></small>`;
         });
         setup.info = plugin_info; //add the script info data to the function as a property
     // if IITC has already booted, immediately run the 'setup' function
