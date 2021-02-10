@@ -2,7 +2,7 @@
 // @id portalHistoryFlags
 // @name IITC Plugin: Portal History Flags
 // @category Layer
-// @version 0.0.6
+// @version 0.0.8
 // @namespace	https://github.com/jimsug/IngressPortalHistoryFlags
 // @downloadURL	https://github.com/jimsug/IngressPortalHistoryFlags/raw/main/portalHistoryFlags.user.js
 // @homepageURL	https://github.com/jimsug/IngressPortalHistoryFlags
@@ -29,10 +29,10 @@ function wrapper(plugin_info) {
     plugin_info.buildName = "PortalHistoryFlags";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "202102062313";
+    plugin_info.dateTimeVersion = "202102101115";
 
     // ID/name of the plugin
-    plugin_info.pluginId = "portalhistoryflags";
+    plugin_info.pluginId = "portalhistoryflagsjimsug";
 
 
     function svgToIcon(str, x) {
@@ -64,11 +64,8 @@ function wrapper(plugin_info) {
             if (portal.options.data.agentVisited) {
                 L.circle(portal._latlng,
                     portal.options.radius + 10, thisPlugin.ornamentVisited
-                ).addTo(thisPlugin.layerGroup);
+                ).addTo(thisPlugin.visited);
             } else {
-                L.circle(portal._latlng,
-                    portal.options.radius + 10, thisPlugin.ornamentUnVisited
-                ).addTo(thisPlugin.invLayerGroup);
                 L.circle(portal._latlng,
                     portal.options.radius + 10, thisPlugin.ornamentUnVisited
                 ).addTo(thisPlugin.unvisited);
@@ -77,26 +74,20 @@ function wrapper(plugin_info) {
             if (portal.options.data.agentCaptured) {
                 L.circle(portal._latlng,
                     portal.options.radius + 15, thisPlugin.ornamentCaptured
-                ).addTo(thisPlugin.layerGroup);
+                ).addTo(thisPlugin.captured);
             } else {
                 L.circle(portal._latlng,
                     portal.options.radius + 15, thisPlugin.ornamentUnCaptured
-                ).addTo(thisPlugin.invLayerGroup);
-                L.circle(portal._latlng,
-                    portal.options.radius + 10, thisPlugin.ornamentUnCaptured
                 ).addTo(thisPlugin.uncaptured);
             }
 
             if (portal.options.data.agentScouted) {
                 L.circle(portal._latlng,
                     portal.options.radius + 20, thisPlugin.ornamentScouted
-                ).addTo(thisPlugin.layerGroup);
+                ).addTo(thisPlugin.scouted);
             } else {
                 L.circle(portal._latlng,
                     portal.options.radius + 20, thisPlugin.ornamentUnScouted
-                ).addTo(thisPlugin.invLayerGroup);
-                L.circle(portal._latlng,
-                    portal.options.radius + 10, thisPlugin.ornamentUnScouted
                 ).addTo(thisPlugin.unscouted);
             }
         } else {
@@ -105,15 +96,10 @@ function wrapper(plugin_info) {
                     icon: thisPlugin.iconVisited,
                     interactive: false,
                     keyboard: false,
-                }).addTo(thisPlugin.layerGroup);
+                }).addTo(thisPlugin.visited);
             } else {
                 L.marker(portal._latlng, {
-                    icon: thisPlugin.iconVisited,
-                    interactive: false,
-                    keyboard: false,
-                }).addTo(thisPlugin.invLayerGroup);
-                L.marker(portal._latlng, {
-                    icon: thisPlugin.iconVisited,
+                    icon: thisPlugin.iconUnvisited,
                     interactive: false,
                     keyboard: false,
                 }).addTo(thisPlugin.unvisited);
@@ -124,15 +110,10 @@ function wrapper(plugin_info) {
                     icon: thisPlugin.iconCaptured,
                     interactive: false,
                     keyboard: false,
-                }).addTo(thisPlugin.layerGroup);
+                }).addTo(thisPlugin.captured);
             } else {
                 L.marker(portal._latlng, {
-                    icon: thisPlugin.iconCaptured,
-                    interactive: false,
-                    keyboard: false,
-                }).addTo(thisPlugin.invLayerGroup);
-                L.marker(portal._latlng, {
-                    icon: thisPlugin.iconCaptured,
+                    icon: thisPlugin.iconUncaptured,
                     interactive: false,
                     keyboard: false,
                 }).addTo(thisPlugin.uncaptured);
@@ -143,15 +124,10 @@ function wrapper(plugin_info) {
                     icon: thisPlugin.iconScouted,
                     interactive: false,
                     keyboard: false,
-                }).addTo(thisPlugin.layerGroup);
+                }).addTo(thisPlugin.scouted);
             } else {
                 L.marker(portal._latlng, {
-                    icon: thisPlugin.iconScouted,
-                    interactive: false,
-                    keyboard: false,
-                }).addTo(thisPlugin.invLayerGroup);
-                L.marker(portal._latlng, {
-                    icon: thisPlugin.iconScouted,
+                    icon: thisPlugin.iconUnscouted,
                     interactive: false,
                     keyboard: false,
                 }).addTo(thisPlugin.unscouted);
@@ -161,8 +137,9 @@ function wrapper(plugin_info) {
     }
 
     function drawAllFlags() {
-        thisPlugin.layerGroup.clearLayers();
-        thisPlugin.invLayerGroup.clearLayers();
+        thisPlugin.captured.clearLayers();
+        thisPlugin.visited.clearLayers();
+        thisPlugin.scouted.clearLayers();
         thisPlugin.uncaptured.clearLayers();
         thisPlugin.unvisited.clearLayers();
         thisPlugin.unscouted.clearLayers();
@@ -238,6 +215,10 @@ function wrapper(plugin_info) {
         thisPlugin.iconCaptured = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="#ff0000" cx="50" cy="50" r="50"/></svg>', 5);
         thisPlugin.iconScouted = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="#ff9c00" cx="50" cy="50" r="50"/></svg>', -5);
 
+        thisPlugin.iconUnvisited = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="transparent" stroke-width="10" stroke="#9538ff" cx="50" cy="50" r="50"/></svg>', 15);
+        thisPlugin.iconUncaptured = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="transparent" stroke-width="10" stroke="#ff0000" cx="50" cy="50" r="50"/></svg>', 5);
+        thisPlugin.iconUnscouted = svgToIcon('<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle fill="transparent" stroke-width="10" stroke="#ff9c00" cx="50" cy="50" r="50"/></svg>', -5);
+
         thisPlugin.ornamentVisited = {color:"#9538ff", opacity:1, fillOpacity:0, weight:2, clickable:false}
         thisPlugin.ornamentCaptured = {color:"#ff0000", opacity:1, fillOpacity:0, weight:2, clickable:false}
         thisPlugin.ornamentScouted = {color:"#ff9c00", opacity:1, fillOpacity:0, weight:2, clickable:false}
@@ -247,16 +228,18 @@ function wrapper(plugin_info) {
         thisPlugin.ornamentUnScouted = {color:"#ff9c00", opacity:1, fillOpacity:0, weight:2, clickable:false, dashArray:[ 10, 6 ]}
 
 
-        thisPlugin.layerGroup = new L.LayerGroup();
-        thisPlugin.invLayerGroup = new L.LayerGroup();
+        thisPlugin.visited = new L.LayerGroup();
+        thisPlugin.captured = new L.LayerGroup();
+        thisPlugin.scouted = new L.LayerGroup();
         thisPlugin.uncaptured = new L.LayerGroup();
         thisPlugin.unvisited = new L.LayerGroup();
         thisPlugin.unscouted = new L.LayerGroup();
-        window.addLayerGroup('Portal History', thisPlugin.layerGroup, false);
-        window.addLayerGroup('Portal History (Inverted)', thisPlugin.invLayerGroup, false);
-        window.addLayerGroup('Portal History (Unvisited)', thisPlugin.unvisited, false);
-        window.addLayerGroup('Portal History (Uncaptured)', thisPlugin.uncaptured, false);
-        window.addLayerGroup('Portal History (Unscouted)', thisPlugin.unscouted, false);
+        window.addLayerGroup('Portal History: Visited Portals', thisPlugin.visited, true);
+        window.addLayerGroup('Portal History: Captured Portals', thisPlugin.captured, true);
+        window.addLayerGroup('Portal History: Scouted Portals', thisPlugin.scouted, false);
+        window.addLayerGroup('Portal History: Unvisited Portals', thisPlugin.unvisited, true);
+        window.addLayerGroup('Portal History: Uncaptured Portals', thisPlugin.uncaptured, true);
+        window.addLayerGroup('Portal History: Unscouted Portals', thisPlugin.unscouted, false);
 
         window.addHook('portalAdded', thisPlugin.addToPortalMap);
 
