@@ -1,8 +1,8 @@
 // ==UserScript==
 // @id portalHistoryFlags
-// @name IITC Plugin: Portal History Flags
-// @category Layer
-// @version 0.0.8
+// @name IITC Plugin: Portal History
+// @category Info
+// @version 0.1.0
 // @namespace	https://github.com/jimsug/IngressPortalHistoryFlags
 // @downloadURL	https://github.com/jimsug/IngressPortalHistoryFlags/raw/main/portalHistoryFlags.user.js
 // @homepageURL	https://github.com/jimsug/IngressPortalHistoryFlags
@@ -29,7 +29,7 @@ function wrapper(plugin_info) {
     plugin_info.buildName = "PortalHistoryFlags";
 
     // Datetime-derived version of the plugin
-    plugin_info.dateTimeVersion = "202102101115";
+    plugin_info.dateTimeVersion = "202102101217";
 
     // ID/name of the plugin
     plugin_info.pluginId = "portalhistoryflagsjimsug";
@@ -247,7 +247,19 @@ function wrapper(plugin_info) {
         window.addPortalHighlighter("Portal History: Uncaptured Portals Only", thisPlugin.uncapturedHighlight);
         window.addPortalHighlighter("Portal History: Unscouted Portals Only", thisPlugin.unscoutedHighlight);
         let mode = thisPlugin.getCurrentDisplayMode();
-         $('#toolbox').append('<a id="' + plugin_info.pluginId + '_mode" onclick="window.plugin.PortalHistoryFlags.toggleDisplayMode()">History Display: ' + mode + '</a>');
+        $('#toolbox').append('<a id="' + plugin_info.pluginId + '_mode" onclick="window.plugin.PortalHistoryFlags.toggleDisplayMode()">History Display: ' + mode + '</a>');
+
+
+
+        window.addHook('portalDetailsUpdated', function(data) {
+            let visited = data.portal.options.data.agentVisited ? "✔" : "✘";
+            let captured = data.portal.options.data.agentCaptured ? "✔" : "✘";
+            let scouted = data.portal.options.data.agentScouted ? "✔" : "✘";
+            let visitedText = data.portal.options.data.agentVisited ? "Visited" : "Unvisited";
+            let capturedText = data.portal.options.data.agentCaptured ? "Captured" : "Uncaptured";
+            let scoutedText = data.portal.options.data.agentScouted ? "Scouted" : "Unscouted";
+            $("h3.title")[0].innerHTML = $("h3.title")[0].innerHTML + ` <small><abbr title="${visitedText}">V: ${visited}</abbr>|<abbr title="${capturedText}">C: ${captured}</abbr>|<abbr title="${scoutedText}">S: ${scouted}</abbr>`;
+        });
         setup.info = plugin_info; //add the script info data to the function as a property
     // if IITC has already booted, immediately run the 'setup' function
     }
