@@ -2,7 +2,7 @@
 // @id portalHistoryFlags
 // @name IITC Plugin: Portal History
 // @category Info
-// @version 0.1.2
+// @version 0.2.0
 // @namespace	https://github.com/jimsug/IngressPortalHistoryFlags
 // @downloadURL	https://github.com/jimsug/IngressPortalHistoryFlags/raw/main/portalHistoryFlags.user.js
 // @homepageURL	https://github.com/jimsug/IngressPortalHistoryFlags
@@ -22,11 +22,11 @@ function wrapper(plugin_info) {
 
     const KEY_SETTINGS = "plugin-portal-history-flags-jimsug";
 
-    window.plugin.PortalHistoryFlags = function () {};
+    window.plugin.PortalHistoryFlagsRings = function () {};
 
-    const thisPlugin = window.plugin.PortalHistoryFlags;
+    const thisPlugin = window.plugin.PortalHistoryFlagsRings;
     // Name of the IITC build for first-party plugins
-    plugin_info.buildName = "PortalHistoryFlags";
+    plugin_info.buildName = "PortalHistoryFlagsRings";
 
     // Datetime-derived version of the plugin
     plugin_info.dateTimeVersion = "202102101217";
@@ -42,6 +42,128 @@ function wrapper(plugin_info) {
             iconSize:     [10, 10],
             iconAnchor:   [x, 24],
         })
+    }
+
+    thisPlugin.showSummary = function(){
+        if(getMapZoomTileParameters(map.getZoom()).hasPortals){
+            // Don't try to display a summary if we aren't at the right zoom level
+            // We check that the information is there, but it won't be complete anyway
+            var mapBounds = map.getBounds();
+            self.counts = {
+                visited:{
+                    RES: 0,
+                    ENL: 0,
+                    NEU: 0
+                },
+                unvisited:{
+                    RES: 0,
+                    ENL: 0,
+                    NEU: 0
+                },
+                captured:{
+                    RES: 0,
+                    ENL: 0,
+                    NEU: 0
+                },
+                uncaptured:{
+                    RES: 0,
+                    ENL: 0,
+                    NEU: 0
+                },
+                scouted:{
+                    RES: 0,
+                    ENL: 0,
+                    NEU: 0
+                },
+                unscouted:{
+                    RES: 0,
+                    ENL: 0,
+                    NEU: 0
+                }
+            };
+            self.totalcount = 0;
+
+            $.each(window.portals, function(i, portal){
+                if(!mapBounds.contains(portal.getLatLng())) return true;
+                let team = portal.options.team;
+                self.totalcount++;
+
+                switch(team){
+                    case 1:
+                        self.counts.visited.RES += portal.options.data.agentVisited ? 1 : 0;
+                        self.counts.unvisited.RES += (portal.options.data.hasOwnProperty('agentVisited') && portal.options.data.agentVisited) ? 0 : 1;
+                        self.counts.captured.RES += portal.options.data.agentCaptured ? 1 : 0;
+                        self.counts.uncaptured.RES += (portal.options.data.hasOwnProperty('agentCaptured') && portal.options.data.agentCaptured) ? 0 : 1;
+                        self.counts.scouted.RES += portal.options.data.agentScouted ? 1 : 0;
+                        self.counts.unscouted.RES += portal.options.data.agentScouted ? 0 : 1;
+                        break;
+                    case 2:
+                        self.counts.visited.ENL += portal.options.data.agentVisited ? 1 : 0;
+                        self.counts.unvisited.ENL += (portal.options.data.hasOwnProperty('agentVisited') && portal.options.data.agentVisited) ? 0 : 1;
+                        self.counts.captured.ENL += portal.options.data.agentCaptured ? 1 : 0;
+                        self.counts.uncaptured.ENL += (portal.options.data.hasOwnProperty('agentCaptured') && portal.options.data.agentCaptured) ? 0 : 1;
+                        self.counts.scouted.ENL += portal.options.data.agentScouted ? 1 : 0;
+                        self.counts.unscouted.ENL += (portal.options.data.hasOwnProperty('agentScouted') && portal.options.data.agentScouted) ? 0 : 1;
+                        break;
+                    default:
+                        self.counts.visited.NEU += portal.options.data.agentVisited ? 1 : 0;
+                        self.counts.unvisited.NEU += (portal.options.data.hasOwnProperty('agentVisited') && portal.options.data.agentVisited) ? 0 : 1;
+                        self.counts.captured.NEU += portal.options.data.agentCaptured ? 1 : 0;
+                        self.counts.uncaptured.NEU += (portal.options.data.hasOwnProperty('agentCaptured') && portal.options.data.agentCaptured) ? 0 : 1;
+                        self.counts.scouted.NEU += portal.options.data.agentScouted ? 1 : 0;
+                        self.counts.unscouted.NEU += (portal.options.data.hasOwnProperty('agentScouted') && portal.options.data.agentScouted) ? 0 : 1;
+                        break;
+                    }
+                    });
+
+            if(self.totalcount > 0) {
+                var counts = '';
+
+                let alignment = ["RES", "ENL", "NEU"];
+                let state = ["visited", "captured", "scouted"];
+
+                counts += '<table><tr><th></th><th class="enl">Enlightened</th><th class="res">Resistance</th><th>Neutral</th><th class="strong">Total</th></tr>';
+                $.each(state, function(i, stat){
+                    counts += '<tr class="' + stat + '"><td>' + stat.replace(
+                        /\w\S*/g,
+                        function(txt) {
+                            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                        }
+                    ) + '</td>';
+
+                    $.each(alignment, function(j, align){
+                        counts += '<td>' + self.counts[stat][align] + '</td>'
+                    });
+
+                    counts += '<td>' + (self.counts[stat].RES + self.counts[stat].ENL + self.counts[stat].NEU) + '</td>';
+
+                    counts += '</tr>';
+
+                    counts += '<tr class="inverse ' + stat + '"><td>Un' + stat.toLowerCase() + '</td>';
+
+                    $.each(alignment, function(j, align){
+                        counts += '<td>' + self.counts["un" + stat][align] + '</td>'
+                    });
+
+                    counts += '<td>' + (self.counts['un' + stat].RES + self.counts['un' + stat].ENL + self.counts['un' + stat].NEU) + '</td>';
+
+                    counts += '</tr>';
+                });
+                counts += '</table>';
+            }
+
+            dialog({
+                html: '<div id="'+ plugin_info.pluginId +'">' + counts + '</div>',
+                title: 'Portal History: ' + self.totalcount + ' portal(s) in view',
+                width: 'auto'
+            });
+        } else {
+            dialog({
+                html: "Zoom in to see portal history details!",
+                title: 'Portal History: Zoom in!',
+                width: 'auto'
+            });
+        }
     }
 
     thisPlugin.addToPortalMap = function (data) {
@@ -201,6 +323,15 @@ function wrapper(plugin_info) {
         localStorage[KEY_SETTINGS] = JSON.stringify(thisPlugin.settings);
         drawAllFlags();
     }
+
+    window.plugin.PortalHistoryFlagsRings.onPaneChanged = function(pane) {
+        if (pane == plugin_info.pluginId) {
+            window.plugin.PortalHistoryFlagsRings.showSummary();
+        } else {
+            $('#' + plugin_info.pluginId).remove();
+        }
+    }
+
     function setup() {
 
         try {
@@ -247,8 +378,27 @@ function wrapper(plugin_info) {
         window.addPortalHighlighter("Portal History: Uncaptured Portals Only", thisPlugin.uncapturedHighlight);
         window.addPortalHighlighter("Portal History: Unscouted Portals Only", thisPlugin.unscoutedHighlight);
         let mode = thisPlugin.getCurrentDisplayMode();
-        $('#toolbox').append('<a id="' + plugin_info.pluginId + '_mode" onclick="window.plugin.PortalHistoryFlags.toggleDisplayMode()">History Display: ' + mode + '</a>');
+        $('#toolbox').append('<a id="' + plugin_info.pluginId + '_mode" onclick="window.plugin.PortalHistoryFlagsRings.toggleDisplayMode()">Portal History Display: ' + mode + '</a>');
+        if(window.useAndroidPanes()){
+            android.addPane(plugin_info.pluginId, 'Portal History Summary', 'ic_action_data_usage');
+            addHook('paneChanged', window.plugin.PortalHistoryFlagsRings.onPaneChanged);
+        } else {
+            $('#toolbox').append('<a id="' + plugin_info.pluginId + '_summary" onclick="window.plugin.PortalHistoryFlagsRings.showSummary()">Portal History Summary</a>');
+        }
 
+
+        $('head').append('<style>'
+        +'#'+plugin_info.pluginId + ' table tr { font-weight: bold; background-color: #1b415e; border: 0;}'
+        +'#'+plugin_info.pluginId + ' table tr.inverse { border-bottom: 1px solid #0b314e !important;}'
+        +'#'+plugin_info.pluginId + ' table th { text-align: center; border-bottom: 1px solid #0b314e !important;}'
+        +'#'+plugin_info.pluginId + ' table td { text-align: center; padding: 3px}'
+        +'#'+plugin_info.pluginId + ' table td:nth-child(1) { text-align: left;}'
+        +'#'+plugin_info.pluginId + ' table th:nth-child(1) { text-align: left;}'
+        +'#'+plugin_info.pluginId + ' table tr.visited { background-color:#4538ff !important;}'
+        +'#'+plugin_info.pluginId + ' table tr.captured { background-color:#bb0000 !important;}'
+        +'#'+plugin_info.pluginId + ' table tr.scouted { background-color:#df6c00 !important;}'
+        +'#'+plugin_info.pluginId + ' table tr.inverse { font-weight:normal !important;}'
+        +'</style>');
 
 
         window.addHook('portalDetailsUpdated', function(data) {
@@ -259,6 +409,7 @@ function wrapper(plugin_info) {
             let capturedText = data.portal.options.data.agentCaptured ? "Captured" : "NOT captured";
             let scoutedText = data.portal.options.data.agentScouted ? "Scouted" : "NOT scouted";
             $("#randdetails>tbody").append(`<tr><td colspan="4" style="text-align: center;"><strong><abbr style="color: #9538ff;" title="${visitedText}">V: ${visited}</abbr>&nbsp;<abbr style="color: #ff0000;" title="${capturedText}">C: ${captured}</abbr>&nbsp;<abbr style="color: #ff9c00;" title="${scoutedText}">S: ${scouted}</abbr></strong></td></tr>`);
+
         });
         setup.info = plugin_info; //add the script info data to the function as a property
     // if IITC has already booted, immediately run the 'setup' function
