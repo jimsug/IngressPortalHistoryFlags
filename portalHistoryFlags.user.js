@@ -2,7 +2,7 @@
 // @id portalHistoryFlags
 // @name IITC Plugin: Portal History
 // @category Info
-// @version 0.2.0
+// @version 0.2.1
 // @namespace	https://github.com/jimsug/IngressPortalHistoryFlags
 // @downloadURL	https://github.com/jimsug/IngressPortalHistoryFlags/raw/main/portalHistoryFlags.user.js
 // @homepageURL	https://github.com/jimsug/IngressPortalHistoryFlags
@@ -151,16 +151,21 @@ function wrapper(plugin_info) {
                 });
                 counts += '</table>';
             }
-
-            dialog({
-                html: '<div id="'+ plugin_info.pluginId +'">' + counts + '</div>',
-                title: 'Portal History: ' + self.totalcount + ' portal(s) in view',
-                width: 'auto'
-            });
+            var htmlb = counts;
+            var titleb = 'Portal History: ' + self.totalcount + ' por[tal(s) in view'
+        } else {
+            var htmlb = "Zoom in to see portal history details!";
+            var titleb = 'Portal History: Zoom in!';
+        }
+        if(window.useAndroidPanes()){
+            $('<div id="' + plugin_info.pluginId + '" class="mobile">'
+            + '<div class="ui-dialog-titlebar"><span class="ui-dialog-title ui-dialog-title-active">' + titleb + '</span></div>'
+            + htmlb
+            + '</div>').appendTo(document.body);
         } else {
             dialog({
-                html: "Zoom in to see portal history details!",
-                title: 'Portal History: Zoom in!',
+                html: '<div id="' + plugin_info.pluginId + '">' + htmlb + '</div>',
+                title: titleb,
                 width: 'auto'
             });
         }
