@@ -2,7 +2,7 @@
 // @id portalHistoryFlags
 // @name IITC Plugin: Portal History
 // @category Info
-// @version 0.2.3
+// @version 0.2.4
 // @namespace	https://github.com/jimsug/IngressPortalHistoryFlags
 // @downloadURL	https://github.com/jimsug/IngressPortalHistoryFlags/raw/main/portalHistoryFlags.user.js
 // @homepageURL	https://github.com/jimsug/IngressPortalHistoryFlags
@@ -152,7 +152,7 @@ function wrapper(plugin_info) {
                 counts += '</table>';
             }
             var htmlb = counts;
-            var titleb = 'Portal History: ' + self.totalcount + ' por[tal(s) in view'
+            var titleb = 'Portal History: ' + self.totalcount + ' portal(s) in view'
         } else {
             var htmlb = "Zoom in to see portal history details!";
             var titleb = 'Portal History: Zoom in!';
