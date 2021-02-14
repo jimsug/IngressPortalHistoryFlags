@@ -2,7 +2,7 @@
 // @id portalHistoryFlags
 // @name IITC Plugin: Portal History
 // @category Info
-// @version 0.2.1
+// @version 0.2.2
 // @namespace	https://github.com/jimsug/IngressPortalHistoryFlags
 // @downloadURL	https://github.com/jimsug/IngressPortalHistoryFlags/raw/main/portalHistoryFlags.user.js
 // @homepageURL	https://github.com/jimsug/IngressPortalHistoryFlags
@@ -393,6 +393,7 @@ function wrapper(plugin_info) {
 
 
         $('head').append('<style>'
+        +'#'+plugin_info.pluginId + '.mobile {background: transparent; border: 0 none !important; height: 100% !important; width: 100% !important; left: 0 !important; top: 0 !important; position: absolute; overflow: auto; z-index: 9000 !important; }'
         +'#'+plugin_info.pluginId + ' table tr { font-weight: bold; background-color: #1b415e; border: 0;}'
         +'#'+plugin_info.pluginId + ' table tr.inverse { border-bottom: 1px solid #0b314e !important;}'
         +'#'+plugin_info.pluginId + ' table th { text-align: center; border-bottom: 1px solid #0b314e !important;}'
