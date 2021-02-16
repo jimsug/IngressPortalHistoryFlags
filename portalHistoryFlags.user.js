@@ -2,7 +2,7 @@
 // @id portalHistoryFlags
 // @name IITC Plugin: Portal History
 // @category Info
-// @version 0.2.5
+// @version 0.2.6
 // @namespace	https://github.com/jimsug/IngressPortalHistoryFlags
 // @downloadURL	https://github.com/jimsug/IngressPortalHistoryFlags/raw/main/portalHistoryFlags.user.js
 // @homepageURL	https://github.com/jimsug/IngressPortalHistoryFlags
@@ -85,19 +85,12 @@ function wrapper(plugin_info) {
 
             $.each(window.portals, function(i, portal){
                 if(!mapBounds.contains(portal.getLatLng())) return true;
-                let team = portal.options.team;
+                var team = portal.options.data.team;
+                console.debug(team);
                 self.totalcount++;
 
                 switch(team){
-                    case 1:
-                        self.counts.visited.RES += portal.options.data.agentVisited ? 1 : 0;
-                        self.counts.unvisited.RES += (portal.options.data.hasOwnProperty('agentVisited') && portal.options.data.agentVisited) ? 0 : 1;
-                        self.counts.captured.RES += portal.options.data.agentCaptured ? 1 : 0;
-                        self.counts.uncaptured.RES += (portal.options.data.hasOwnProperty('agentCaptured') && portal.options.data.agentCaptured) ? 0 : 1;
-                        self.counts.scouted.RES += portal.options.data.agentScouted ? 1 : 0;
-                        self.counts.unscouted.RES += portal.options.data.agentScouted ? 0 : 1;
-                        break;
-                    case 2:
+                    case "E":
                         self.counts.visited.ENL += portal.options.data.agentVisited ? 1 : 0;
                         self.counts.unvisited.ENL += (portal.options.data.hasOwnProperty('agentVisited') && portal.options.data.agentVisited) ? 0 : 1;
                         self.counts.captured.ENL += portal.options.data.agentCaptured ? 1 : 0;
@@ -105,7 +98,15 @@ function wrapper(plugin_info) {
                         self.counts.scouted.ENL += portal.options.data.agentScouted ? 1 : 0;
                         self.counts.unscouted.ENL += (portal.options.data.hasOwnProperty('agentScouted') && portal.options.data.agentScouted) ? 0 : 1;
                         break;
-                    default:
+                    case "R":
+                        self.counts.visited.RES += portal.options.data.agentVisited ? 1 : 0;
+                        self.counts.unvisited.RES += (portal.options.data.hasOwnProperty('agentVisited') && portal.options.data.agentVisited) ? 0 : 1;
+                        self.counts.captured.RES += portal.options.data.agentCaptured ? 1 : 0;
+                        self.counts.uncaptured.RES += (portal.options.data.hasOwnProperty('agentCaptured') && portal.options.data.agentCaptured) ? 0 : 1;
+                        self.counts.scouted.RES += portal.options.data.agentScouted ? 1 : 0;
+                        self.counts.unscouted.RES += portal.options.data.agentScouted ? 0 : 1;
+                        break;
+                    case "N":
                         self.counts.visited.NEU += portal.options.data.agentVisited ? 1 : 0;
                         self.counts.unvisited.NEU += (portal.options.data.hasOwnProperty('agentVisited') && portal.options.data.agentVisited) ? 0 : 1;
                         self.counts.captured.NEU += portal.options.data.agentCaptured ? 1 : 0;
@@ -119,7 +120,7 @@ function wrapper(plugin_info) {
             if(self.totalcount > 0) {
                 var counts = '';
 
-                let alignment = ["RES", "ENL", "NEU"];
+                let alignment = ["ENL", "RES", "NEU"];
                 let state = ["visited", "captured", "scouted"];
 
                 counts += '<table><tr><th></th><th class="enl">Enlightened</th><th class="res">Resistance</th><th>Neutral</th><th class="strong">Total</th></tr>';
@@ -132,6 +133,7 @@ function wrapper(plugin_info) {
                     ) + '</td>';
 
                     $.each(alignment, function(j, align){
+                        console.debug(stat, align, self.counts[stat][align]);
                         counts += '<td>' + self.counts[stat][align] + '</td>'
                     });
 
