@@ -89,7 +89,7 @@ function wrapper(plugin_info) {
                 self.totalcount++;
 
                 switch(team){
-                    case 1:
+                    case 2:
                         self.counts.visited.RES += portal.options.data.agentVisited ? 1 : 0;
                         self.counts.unvisited.RES += (portal.options.data.hasOwnProperty('agentVisited') && portal.options.data.agentVisited) ? 0 : 1;
                         self.counts.captured.RES += portal.options.data.agentCaptured ? 1 : 0;
@@ -97,7 +97,7 @@ function wrapper(plugin_info) {
                         self.counts.scouted.RES += portal.options.data.agentScouted ? 1 : 0;
                         self.counts.unscouted.RES += portal.options.data.agentScouted ? 0 : 1;
                         break;
-                    case 2:
+                    case 1:
                         self.counts.visited.ENL += portal.options.data.agentVisited ? 1 : 0;
                         self.counts.unvisited.ENL += (portal.options.data.hasOwnProperty('agentVisited') && portal.options.data.agentVisited) ? 0 : 1;
                         self.counts.captured.ENL += portal.options.data.agentCaptured ? 1 : 0;
